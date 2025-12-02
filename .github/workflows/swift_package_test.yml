@@ -83,6 +83,10 @@ on:
         type: string
         description: "Exclude Windows Swift version list (JSON)"
         default: "[{\"swift_version\": \"\"}]"
+      windows_nodes:
+        type: string
+        description: "Windows nodes list (JSON)"
+        default: "[\"windows-2022\"]"
       swift_flags:
         type: string
         description: "Swift flags for release version"
@@ -618,13 +622,14 @@ jobs:
           ${{ steps.script_path.outputs.root }}/.github/workflows/scripts/install-and-build-with-sdk.sh --android --flags="$BUILD_FLAGS" --build-command="${{ inputs.android_sdk_build_command }}" --android-sdk-triple=${{ join(fromJson(inputs.android_sdk_triples), ' --android-sdk-triple=') }} --android-ndk-version="${{ matrix.ndk_version }}" ${{ matrix.swift_version }}
 
   windows-build:
-    name: Windows (${{ matrix.swift_version }} - windows-2022)
+    name: Windows (${{ matrix.swift_version }} - ${{ matrix.node_name }})
     if: ${{ inputs.enable_windows_checks }}
-    runs-on: windows-2022
+    runs-on: ${{ matrix.node_name}}
     strategy:
       fail-fast: false
       matrix:
         swift_version: ${{ fromJson(inputs.windows_swift_versions) }}
+        node_name: ${{ fromJson(inputs.windows_nodes) }}
         exclude:
           - ${{ fromJson(inputs.windows_exclude_swift_versions) }}
     steps:
@@ -665,10 +670,17 @@ jobs:
         id: pull_docker_image
         if: ${{ inputs.enable_windows_docker }}
         run: |
-          if ("${{ matrix.swift_version }}".Contains("nightly")) {
-            $Image = "swiftlang/swift:${{ matrix.swift_version }}-windowsservercore-ltsc2022"
+          if ("${{ matrix.node_name}}".Contains("windows-2022")) {
+            $imageSuffix = "windowsservercore-ltsc2022"
+          } else if ("${{ matrix.node_name}}".Contains("windows-2019")){
+            $imageSuffix = "windowsservercore-1809"
           } else {
-            $Image = "swift:${{ matrix.swift_version }}-windowsservercore-ltsc2022"
+            throw "Unsupported Windows node: ${{ matrix.node_name}}"
+          }
+          if ("${{ matrix.swift_version }}".Contains("nightly")) {
+            $Image = "swiftlang/swift:${{ matrix.swift_version }}-$imageSuffix"
+          } else {
+            $Image = "swift:${{ matrix.swift_version }}-$imageSuffix"
           }
           docker pull $Image
           echo "image=$Image" >> "$env:GITHUB_OUTPUT"
