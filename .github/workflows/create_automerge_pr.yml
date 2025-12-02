@@ -59,6 +59,14 @@ on:
         type: string
         description: The message that should be included in the PR created by this job
         default: This PR was automatically opened by a GitHub action. Review the changes included in this PR and determine if they should be included in the release branch. If yes, merge the PR. Otherwise revert changes that should not be included on this branch.
+      create_as_draft:
+        type: boolean
+        description: Whether to create the PR as a draft
+        default: true
+      should_test:
+        type: boolean
+        description: Whether the created PR should trigger tests
+        default: false
 
 jobs:
   create_merge_pr:
@@ -93,6 +101,10 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          # Define variables based on workflow input
+          if [[ "${{ inputs.create_as_draft }} == "true" ]] ; then
+            DRAFT_FLAG="--draft"
+          fi
           # Create a branch for the PR instead of opening a PR that merges head_branch directly so that we have a fixed
           # target in the PR and don't modify the PR as new commits are put on the head branch.
           PR_BRANCH="automerge/merge-main-$(date +%Y-%m-%d_%H-%M)"
@@ -102,7 +114,11 @@ jobs:
 
           gh pr create \
             --base "${{ inputs.base_branch }}" \
-            --head "$PR_BRANCH" \
+            --head "$PR_BRANCH" ${DRAFT_FLAG} \
             --title 'Merge `${{ inputs.head_branch }}` into `${{ inputs.base_branch }}`' \
-            --body '${{ inputs.pr_message }}' \
-            --draft
+            --body '${{ inputs.pr_message }}'
+
+          # Trigger tests is requested
+          if [[ "${{ inputs.should_test }}" == "true" ]] ; then
+            gh pr ready "$PR_BRANCH"
+          fi
