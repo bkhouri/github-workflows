@@ -1,0 +1,39 @@
+name: Check for Dependencies in PR
+
+on:
+  pull_request:
+    types: [opened, reopened, edited, labeled, unlabeled, synchronize]
+
+jobs:
+  check-dependency:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check PR description for "depends on"
+        # Use a script to check the PR body and all commit messages
+        run: |
+          PR_BODY=$(cat $GITHUB_EVENT_PATH | jq -r .pull_request.body)
+          if echo "$PR_BODY" | grep -qi "^depends on"; then
+            echo "::error::PR description contains 'depends on'. Merging is blocked."
+            exit 1
+          fi
+          if echo "$PR_BODY" | grep -qi "^requires"; then
+            echo "::error::PR description contains 'requires'. Merging is blocked."
+            exit 1
+          fi
+
+          # Optional: Check all commit messages in the PR
+          # Note: This requires the 'pull-requests: read' permission
+          # If you don't need this, you can remove the following lines
+          echo "Checking commit messages..."
+          COMMIT_MESSAGES=$(cat $GITHUB_EVENT_PATH | jq -r .pull_request.commits_url | xargs curl -s | jq -r '.[].commit.message')
+          if echo "$COMMIT_MESSAGES" | grep -qi "depends on"; then
+            echo "::error::A commit message contains 'depends on'. Merging is blocked."
+            exit 1
+          fi
+          if echo "$COMMIT_MESSAGES" | grep -qi "^requires"; then
+            echo "::error::A commit message contains 'requires'. Merging is blocked."
+            exit 1
+          fi
+
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
