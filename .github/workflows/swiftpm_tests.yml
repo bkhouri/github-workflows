@@ -1,0 +1,47 @@
+name: Execute SwiftPM Tests
+
+permissions:
+  contents: read
+
+on:
+  workflow_call:
+
+
+jobs:
+  swiftpm-windows:
+    runs-on: windows-2022
+    steps:
+    - name: "Checkout SwiftPM repo at ${{ github.event.pull_request.base.ref }}"
+      uses: actions/checkout@v6
+      with:
+        ref: ${{ github.event.pull_request.base.ref }}
+        repository: swiftlang/swift-package-manager
+        submodules: true
+    - name: Build and Test
+      run: "Invoke-Program swift test"
+
+  swiftpm-macos:
+    runs-on: self-hosted
+    steps:
+    - name: "Checkout SwiftPM repo at ${{ github.event.pull_request.base.ref }}"
+      uses: actions/checkout@v6
+      with:
+        ref: ${{ github.event.pull_request.base.ref }}
+        repository: swiftlang/swift-package-manager
+        submodules: true
+    - name: Build and Test
+      run: "swift test"
+
+  swiftpm-linux:
+    runs-on: ubuntu-latest
+    container:
+      image: "swiftlang/swift:main-nightly"
+    steps:
+    - name: "Checkout SwiftPM repo at ${{ github.event.pull_request.base.ref }}"
+      uses: actions/checkout@v6
+      with:
+        ref: ${{ github.event.pull_request.base.ref }}
+        repository: swiftlang/swift-package-manager
+        submodules: true
+    - name: Build and Test
+      run: "swift test"

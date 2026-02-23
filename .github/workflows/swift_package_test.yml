@@ -6,6 +6,10 @@ permissions:
 on:
   workflow_call:
     inputs:
+      execute_swiftpm_tests:
+        type: boolean
+        description: "When set to true, include jobs that execute SwiftPM tests"
+        default: false
       macos_xcode_versions:
         type: string
         description: "Xcode version list (JSON)"
@@ -240,6 +244,27 @@ on:
         default: false
 
 jobs:
+  swiftpm-macos:
+    name: "Execute SwiftPM macOS (Xcode ${{ matrix.xcode_version }} - ${{ matrix.os_version }} - ${{ matrix.arch }})"
+    runs-on: [self-hosted, macos, "${{ matrix.os_version }}", "${{ matrix.arch }}"]
+    strategy:
+      fail-fast: false
+      matrix:
+        xcode_version: ${{ fromJson(inputs.macos_xcode_versions) }}
+        os_version: ${{ fromJson(inputs.macos_versions) }}
+        arch: ${{ fromJson(inputs.macos_archs) }}
+        exclude:
+          - ${{ fromJson(inputs.macos_exclude_xcode_versions) }}
+    if: ${{ inputs.execute_swiftpm_tests}}
+    steps:
+    - name: "Checkout SwiftPM repo at ${{ github.event.pull_request.base.ref }}"
+      uses: actions/checkout@v6
+      with:
+        ref: ${{ github.event.pull_request.base.ref }}
+        repository: swiftlang/swift-package-manager
+        submodules: true
+    - name: Build and Test
+      run: "swift test"
   macos-build:
     name: macOS (Xcode ${{ matrix.xcode_version }} - ${{ matrix.os_version }} - ${{ matrix.arch }})
     if: ${{ inputs.enable_macos_checks }}
@@ -314,6 +339,52 @@ jobs:
       - name: Build
         run: ${{ inputs.ios_build_command }} ${{ (contains(matrix.swift_version, 'nightly') && inputs.swift_nightly_flags) || inputs.swift_flags }}
         timeout-minutes: ${{ inputs.ios_build_timeout }}
+
+
+  swiftpm-linux:
+    name: "Execute SwiftPM on Linux (${{ matrix.swift_version }} - ${{ matrix.os_version }} - ${{ matrix.arch }})"
+    if: ${{ inputs.execute_swiftpm_tests}}
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        swift_version: ${{ fromJson(inputs.linux_swift_versions) }}
+        os_version: ${{ fromJson(inputs.linux_os_versions) }}
+        arch: ${{ fromJson(inputs.linux_host_archs) }}
+        runner: ${{
+            fromJson(
+              contains(fromJson(inputs.linux_host_archs), 'x86_64') && !contains(fromJson(inputs.linux_host_archs), 'aarch64')
+                && '["ubuntu-24.04"]'
+                || contains(fromJson(inputs.linux_host_archs), 'aarch64') && !contains(fromJson(inputs.linux_host_archs), 'x86_64')
+                && '["ubuntu-24.04-arm"]'
+                || '["ubuntu-24.04","ubuntu-24.04-arm"]'
+            )
+          }}
+        exclude:
+          - ${{ fromJson(inputs.linux_exclude_swift_versions) }}
+          - arch: x86_64
+            runner: ubuntu-24.04-arm
+          - arch: aarch64
+            runner: ubuntu-24.04
+    container:
+      image: ${{ (contains(matrix.swift_version, 'nightly') && 'swiftlang/swift') || 'swift' }}:${{ matrix.swift_version }}-${{ matrix.os_version }}
+    steps:
+    - name: "Checkout SwiftPM repo at ${{ github.event.pull_request.base.ref }}"
+      uses: actions/checkout@v6
+      if: ${{ matrix.os_version != 'amazonlinux2' }}
+      with:
+        ref: ${{ github.event.pull_request.base.ref }}
+        repository: swiftlang/swift-package-manager
+        submodules: true
+    - name: "Checkout SwiftPM repo at ${{ github.event.pull_request.base.ref }}"
+      uses: actions/checkout@v1
+      if: ${{ matrix.os_version == 'amazonlinux2' }}
+      with:
+        ref: ${{ github.event.pull_request.base.ref }}
+        repository: swiftlang/swift-package-manager
+        submodules: true
+    - name: Build and Test
+      run: "swift test"
 
   linux-build:
     name: Linux (${{ matrix.swift_version }} - ${{ matrix.os_version }} - ${{ matrix.arch }})
@@ -673,6 +744,27 @@ jobs:
         run: |
           ${{ inputs.android_sdk_pre_build_command }}
           ${{ steps.script_path.outputs.root }}/.github/workflows/scripts/android/android-emulator-tests.sh --android-sdk-triple=${{ join(fromJson(inputs.android_sdk_triples), ' --android-sdk-triple=') }}
+
+  swiftpm-windows:
+    name: "Execute SwiftPM Windows (${{ matrix.swift_version }} - ${{ matrix.os_version }})"
+    runs-on: ${{ matrix.os_version }}
+    if: ${{ inputs.execute_swiftpm_tests}}
+    strategy:
+      fail-fast: false
+      matrix:
+        swift_version: ${{ fromJson(inputs.windows_swift_versions) }}
+        os_version: ${{ fromJson(inputs.windows_os_versions) }}
+        exclude:
+          - ${{ fromJson(inputs.windows_exclude_swift_versions) }}
+    steps:
+    - name: "Checkout SwiftPM repo at ${{ github.event.pull_request.base.ref }}"
+      uses: actions/checkout@v6
+      with:
+        ref: ${{ github.event.pull_request.base.ref }}
+        repository: swiftlang/swift-package-manager
+        submodules: true
+    - name: Build and Test
+      run: "Invoke-Program swift test"
 
   windows-build:
     name: Windows (${{ matrix.swift_version }} - ${{ matrix.os_version }})
