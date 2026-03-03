@@ -383,6 +383,7 @@ jobs:
         if: ${{ inputs.macos_publish_test_results && always() }}
         with:
           comment_mode: off
+          check_name: "EnricoMI Test Results: ${{ github.action }}"
           files: ${{ inputs.macos_publish_test_results_files }}
           report_individual_runs: true
           action_fail: true
@@ -441,6 +442,7 @@ jobs:
         if: ${{ inputs.ios_publish_test_results && always() }}
         with:
           comment_mode: off
+          check_name: "EnricoMI Test Results: ${{ github.action }}"
           files: ${{ inputs.ios_publish_test_results_files }}
           report_individual_runs: true
           action_fail: true
@@ -542,6 +544,7 @@ jobs:
         if: ${{ inputs.linux_publish_test_results && matrix.os_version != 'amazonlinux2 && always() }}
         with:
           comment_mode: off
+          check_name: "EnricoMI Test Results: ${{ github.action }}"
           files: ${{ inputs.linux_publish_test_results_files }}
           report_individual_runs: true
           action_fail: true
@@ -642,6 +645,7 @@ jobs:
         if: ${{ inputs.linux_static_sdk_publish_test_results && matrix.os_version != 'amazonlinux2 && always() }}
         with:
           comment_mode: off
+          check_name: "EnricoMI Test Results: ${{ github.action }}"
           files: ${{ inputs.linux_static_sdk_publish_test_results_files }}
           report_individual_runs: true
           action_fail: true
@@ -728,6 +732,7 @@ jobs:
         if: ${{ inputs.wasm_sdk_publish_test_results && matrix.os_version != 'amazonlinux2 && always() }}
         with:
           comment_mode: off
+          check_name: "EnricoMI Test Results: ${{ github.action }}"
           files: ${{ inputs.wasm_sdk_publish_test_results_files }}
           report_individual_runs: true
           action_fail: true
@@ -814,6 +819,7 @@ jobs:
         if: ${{ inputs.wasm_sdk_publish_test_results && matrix.os_version != 'amazonlinux2 && always() }}
         with:
           comment_mode: off
+          check_name: "EnricoMI Test Results: ${{ github.action }}"
           files: ${{ inputs.wasm_sdk_publish_test_results_files }}
           report_individual_runs: true
           action_fail: true
@@ -887,6 +893,7 @@ jobs:
         if: ${{ inputs.android_sdk_publish_test_results && always() }}
         with:
           comment_mode: off
+          check_name: "EnricoMI Test Results: ${{ github.action }}"
           files: ${{ inputs.android_sdk_publish_test_results_files }}
           report_individual_runs: true
           action_fail: true
@@ -1083,6 +1090,7 @@ jobs:
         if: ${{ inputs.windows_publish_test_results && always() }}
         with:
           comment_mode: off
+          check_name: "EnricoMI Test Results: ${{ github.action }}"
           files: ${{ inputs.windows_publish_test_results_files }}
           report_individual_runs: true
           action_fail: true
