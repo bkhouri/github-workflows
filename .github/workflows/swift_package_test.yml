@@ -539,6 +539,11 @@ jobs:
       - name: Build / Test
         # zizmor: ignore[template-injection]
         run: ${{ inputs.linux_build_command }} ${{ (contains(matrix.swift_version, 'nightly') && inputs.swift_nightly_flags) || inputs.swift_flags }}
+      - name: Setup python for EnricoMI test results
+        if: ${{ inputs.linux_publish_test_results && matrix.os_version != 'amazonlinux2' && always() }}
+        uses: actions/setup-python@v6
+        with:
+          python_version: 3.10
       - name: "Publish Test results - EnricoMI"
         uses: EnricoMi/publish-unit-test-result-action/linux@v2.23.0
         if: ${{ inputs.linux_publish_test_results && matrix.os_version != 'amazonlinux2' && always() }}
@@ -640,6 +645,11 @@ jobs:
         run: |
           ${{ inputs.linux_static_sdk_pre_build_command }}
           ${{ steps.script_path.outputs.root }}/.github/workflows/scripts/install-and-build-with-sdk.sh --static --flags="$BUILD_FLAGS" --build-command="${{ inputs.linux_static_sdk_build_command }}" ${{ matrix.swift_version }}
+      - name: Setup python for EnricoMI test results
+        if: ${{ inputs.linux_publish_test_results && matrix.os_version != 'amazonlinux2' && always() }}
+        uses: actions/setup-python@v6
+        with:
+          python_version: 3.10
       - name: "Publish Test results - EnricoMI"
         uses: EnricoMi/publish-unit-test-result-action@v2.23.0
         if: ${{ inputs.linux_static_sdk_publish_test_results && matrix.os_version != 'amazonlinux2' && always() }}
@@ -727,6 +737,11 @@ jobs:
         run: |
           ${{ inputs.wasm_sdk_pre_build_command }}
           ${{ steps.script_path.outputs.root }}/.github/workflows/scripts/install-and-build-with-sdk.sh --wasm --flags="$BUILD_FLAGS" --build-command="${{ inputs.wasm_sdk_build_command }}" ${{ matrix.swift_version }}
+      - name: Setup python for EnricoMI test results
+        if: ${{ inputs.linux_publish_test_results && matrix.os_version != 'amazonlinux2' && always() }}
+        uses: actions/setup-python@v6
+        with:
+          python_version: 3.10
       - name: "Publish Test results - EnricoMI"
         uses: EnricoMi/publish-unit-test-result-action@v2.23.0
         if: ${{ inputs.wasm_sdk_publish_test_results && matrix.os_version != 'amazonlinux2' && always() }}
@@ -814,6 +829,11 @@ jobs:
         run: |
           ${{ inputs.wasm_sdk_pre_build_command }}
           ${{ steps.script_path.outputs.root }}/.github/workflows/scripts/install-and-build-with-sdk.sh --embedded-wasm --flags="$BUILD_FLAGS" ${{ matrix.swift_version }}
+      - name: Setup python for EnricoMI test results
+        if: ${{ inputs.linux_publish_test_results && matrix.os_version != 'amazonlinux2' && always() }}
+        uses: actions/setup-python@v6
+        with:
+          python_version: 3.10
       - name: "Publish Test results - EnricoMI"
         uses: EnricoMi/publish-unit-test-result-action@v2.23.0
         if: ${{ inputs.wasm_sdk_publish_test_results && matrix.os_version != 'amazonlinux2' && always() }}
