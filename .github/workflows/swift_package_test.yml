@@ -543,7 +543,7 @@ jobs:
         if: ${{ inputs.linux_publish_test_results && matrix.os_version != 'amazonlinux2' && always() }}
         uses: actions/setup-python@v6
         with:
-          python-version: 3.10
+          python-version: "3.10"
       - name: "Publish Test results - EnricoMI"
         uses: EnricoMi/publish-unit-test-result-action/linux@v2.23.0
         if: ${{ inputs.linux_publish_test_results && matrix.os_version != 'amazonlinux2' && always() }}
@@ -649,7 +649,7 @@ jobs:
         if: ${{ inputs.linux_publish_test_results && matrix.os_version != 'amazonlinux2' && always() }}
         uses: actions/setup-python@v6
         with:
-          python-version: 3.10
+          python-version: "3.10"
       - name: "Publish Test results - EnricoMI"
         uses: EnricoMi/publish-unit-test-result-action@v2.23.0
         if: ${{ inputs.linux_static_sdk_publish_test_results && matrix.os_version != 'amazonlinux2' && always() }}
@@ -741,7 +741,7 @@ jobs:
         if: ${{ inputs.linux_publish_test_results && matrix.os_version != 'amazonlinux2' && always() }}
         uses: actions/setup-python@v6
         with:
-          python-version: 3.10
+          python-version: "3.10"
       - name: "Publish Test results - EnricoMI"
         uses: EnricoMi/publish-unit-test-result-action@v2.23.0
         if: ${{ inputs.wasm_sdk_publish_test_results && matrix.os_version != 'amazonlinux2' && always() }}
@@ -833,7 +833,7 @@ jobs:
         if: ${{ inputs.linux_publish_test_results && matrix.os_version != 'amazonlinux2' && always() }}
         uses: actions/setup-python@v6
         with:
-          python-version: 3.10
+          python-version: "3.10"
       - name: "Publish Test results - EnricoMI"
         uses: EnricoMi/publish-unit-test-result-action@v2.23.0
         if: ${{ inputs.wasm_sdk_publish_test_results && matrix.os_version != 'amazonlinux2' && always() }}
