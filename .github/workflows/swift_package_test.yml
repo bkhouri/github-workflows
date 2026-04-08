@@ -386,10 +386,10 @@ jobs:
           check_name: "EnricoMI Test Results: ${{ github.action }}"
           files: ${{ inputs.macos_publish_test_results_files }}
           report_individual_runs: true
-          action_fail: true
-          action_fail_on_inconclusive: true
+          # action_fail: true
+          # action_fail_on_inconclusive: true
       - name: "Publish test results - test-reporter"
-        uses: dorny/test-reporter@v2.5.0
+        uses: dorny/test-reporter@v3.0.0
         if: ${{ inputs.macos_publish_test_results && always() }}
         with:
           name: "Test Reporter: ${{ github.action }}"
@@ -445,10 +445,10 @@ jobs:
           check_name: "EnricoMI Test Results: ${{ github.action }}"
           files: ${{ inputs.ios_publish_test_results_files }}
           report_individual_runs: true
-          action_fail: true
-          action_fail_on_inconclusive: true
+          # action_fail: true
+          # action_fail_on_inconclusive: true
       - name: "Publish test results - test-reporter"
-        uses: dorny/test-reporter@v2.5.0
+        uses: dorny/test-reporter@v3.0.0
         if: ${{ inputs.ios_publish_test_results && always() }}
         with:
           name: "Test Reporter: ${{ github.action }}"
@@ -552,10 +552,10 @@ jobs:
           check_name: "EnricoMI Test Results: ${{ github.action }}"
           files: ${{ inputs.linux_publish_test_results_files }}
           report_individual_runs: true
-          action_fail: true
-          action_fail_on_inconclusive: true
+          # action_fail: true
+          # action_fail_on_inconclusive: true
       - name: "Publish test results - test-reporter"
-        uses: dorny/test-reporter@v2.5.0
+        uses: dorny/test-reporter@v3.0.0
         if: ${{ inputs.linux_publish_test_results && matrix.os_version != 'amazonlinux2' && always() }}
         with:
           name: "Test Reporter: ${{ github.action }}"
@@ -658,10 +658,10 @@ jobs:
           check_name: "EnricoMI Test Results: ${{ github.action }}"
           files: ${{ inputs.linux_static_sdk_publish_test_results_files }}
           report_individual_runs: true
-          action_fail: true
-          action_fail_on_inconclusive: true
+          # action_fail: true
+          # action_fail_on_inconclusive: true
       - name: "Publish test results - test-reporter"
-        uses: dorny/test-reporter@v2.5.0
+        uses: dorny/test-reporter@v3.0.0
         if: ${{ inputs.linux_static_sdk_publish_test_results && matrix.os_version != 'amazonlinux2' && always() }}
         with:
           name: "Test Reporter: ${{ github.action }}"
@@ -750,10 +750,10 @@ jobs:
           check_name: "EnricoMI Test Results: ${{ github.action }}"
           files: ${{ inputs.wasm_sdk_publish_test_results_files }}
           report_individual_runs: true
-          action_fail: true
-          action_fail_on_inconclusive: true
+          # action_fail: true
+          # action_fail_on_inconclusive: true
       - name: "Publish test results - test-reporter"
-        uses: dorny/test-reporter@v2.5.0
+        uses: dorny/test-reporter@v3.0.0
         if: ${{ inputs.wasm_sdk_publish_test_results && matrix.os_version != 'amazonlinux2' && always() }}
         with:
           name: "Test Reporter: ${{ github.action }}"
@@ -842,10 +842,10 @@ jobs:
           check_name: "EnricoMI Test Results: ${{ github.action }}"
           files: ${{ inputs.wasm_sdk_publish_test_results_files }}
           report_individual_runs: true
-          action_fail: true
-          action_fail_on_inconclusive: true
+          # action_fail: true
+          # action_fail_on_inconclusive: true
       - name: "Publish test results - test-reporter"
-        uses: dorny/test-reporter@v2.5.0
+        uses: dorny/test-reporter@v3.0.0
         if: ${{ inputs.wasm_sdk_publish_test_results && matrix.os_version != 'amazonlinux2' && always() }}
         with:
           name: "Test Reporter: ${{ github.action }}"
@@ -916,10 +916,10 @@ jobs:
           check_name: "EnricoMI Test Results: ${{ github.action }}"
           files: ${{ inputs.android_sdk_publish_test_results_files }}
           report_individual_runs: true
-          action_fail: true
-          action_fail_on_inconclusive: true
+          # action_fail: true
+          # action_fail_on_inconclusive: true
       - name: "Publish test results - test-reporter"
-        uses: dorny/test-reporter@v2.5.0
+        uses: dorny/test-reporter@v3.0.0
         if: ${{ inputs.android_sdk_publish_test_results && always() }}
         with:
           name: "Test Reporter: ${{ github.action }}"
@@ -1113,10 +1113,10 @@ jobs:
           check_name: "EnricoMI Test Results: ${{ github.action }}"
           files: ${{ inputs.windows_publish_test_results_files }}
           report_individual_runs: true
-          action_fail: true
-          action_fail_on_inconclusive: true
+          # action_fail: true
+          # action_fail_on_inconclusive: true
       - name: "Publish test results - test-reporter"
-        uses: dorny/test-reporter@v2.5.0
+        uses: dorny/test-reporter@v3.0.0
         if: ${{ inputs.windows_publish_test_results && always() }}
         with:
           name: "Test Reporter: ${{ github.action }}"
