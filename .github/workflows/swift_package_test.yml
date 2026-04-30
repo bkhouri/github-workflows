@@ -754,7 +754,7 @@ jobs:
         if: ${{ github.repository != 'swiftlang/github-workflows' }}
         uses: actions/checkout@v4
         with:
-          repository: swiftlang/github-workflows
+          repository: bkhouri/github-workflows
           path: github-workflows
       - name: Determine script-root path
         id: script_path
